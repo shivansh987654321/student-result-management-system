@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Results · SRMS</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.0/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body class="app-body">
+  <header class="topbar">
+    <div class="brand-row">
+      <div class="brand-mark small">SRMS</div>
+      <div>
+        <div class="topbar-title">Student Portal</div>
+        <div class="topbar-sub" id="welcomeLine">Welcome</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn ghost" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <main class="content student-content">
+
+    <section class="pane-head no-side">
+      <div>
+        <h2 id="studentTitle">My Report</h2>
+        <p class="muted" id="studentSub">Choose an exam to view results.</p>
+      </div>
+      <div class="pane-head-actions">
+        <label class="inline-field"><span>Exam:</span><select id="examSelect"></select></label>
+        <button class="btn primary" id="downloadPdfBtn">⬇ Download PDF</button>
+      </div>
+    </section>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value" id="s-total">—</div></div>
+      <div class="stat-card"><div class="stat-label">Percentage</div><div class="stat-value" id="s-percent">—</div></div>
+      <div class="stat-card"><div class="stat-label">Overall Grade</div><div class="stat-value" id="s-grade">—</div></div>
+      <div class="stat-card"><div class="stat-label">Result</div><div class="stat-value" id="s-status">—</div></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card span-2 report-card" id="reportPreview"></div>
+      <div class="card span-2">
+        <h3>My Subject-wise Marks</h3>
+        <div class="chart-box short">
+          <canvas id="studentChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/student.js"></script>
+</body>
+</html>

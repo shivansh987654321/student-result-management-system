@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SRMS — Student Result Management System</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="login-body">
+  <div class="login-shell">
+    <aside class="login-hero">
+      <div class="brand">
+        <div class="brand-mark">SRMS</div>
+        <p class="brand-tag">Student Result Management System</p>
+      </div>
+      <ul class="feature-list">
+        <li>Manage students, subjects &amp; marks</li>
+        <li>Auto-calculated grades and percentages</li>
+        <li>Class analytics with charts</li>
+        <li>Downloadable PDF report cards</li>
+      </ul>
+      <p class="hero-foot">Demo credentials are shown on the right &rarr;</p>
+    </aside>
+
+    <main class="login-card">
+      <h1>Sign in</h1>
+      <p class="muted">Choose your role and enter your credentials.</p>
+
+      <div class="role-toggle" role="tablist">
+        <button type="button" class="role-btn active" data-role="admin" role="tab" aria-selected="true">Admin</button>
+        <button type="button" class="role-btn" data-role="student" role="tab" aria-selected="false">Student</button>
+      </div>
+
+      <form id="loginForm" autocomplete="off" novalidate>
+        <label for="username" id="usernameLabel">Username</label>
+        <input id="username" name="username" type="text" required placeholder="admin" />
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required placeholder="••••••••" />
+
+        <div id="loginError" class="error-msg" hidden></div>
+
+        <button type="submit" class="btn primary block">Sign in</button>
+      </form>
+
+      <div class="demo-creds">
+        <h3>Demo credentials</h3>
+        <div class="cred-row"><span class="cred-tag admin-tag">Admin</span> <code>admin</code> / <code>admin123</code></div>
+        <div class="cred-row"><span class="cred-tag student-tag">Student</span> <code>S1001</code> / <code>student123</code></div>
+        <p class="muted small">Data lives in your browser (localStorage). Use the &ldquo;Reset demo data&rdquo; link inside the admin panel to restore defaults.</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

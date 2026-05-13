@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · SRMS</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.0/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body class="app-body">
+  <header class="topbar">
+    <div class="brand-row">
+      <div class="brand-mark small">SRMS</div>
+      <div>
+        <div class="topbar-title">Admin Dashboard</div>
+        <div class="topbar-sub">Student Result Management System</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="link-btn" id="resetDataBtn">Reset demo data</button>
+      <button class="btn ghost" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar">
+      <a href="#" class="nav-item active" data-tab="dashboard">
+        <span class="nav-ico">▦</span> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-tab="students">
+        <span class="nav-ico">👥</span> Students
+      </a>
+      <a href="#" class="nav-item" data-tab="subjects">
+        <span class="nav-ico">📚</span> Subjects
+      </a>
+      <a href="#" class="nav-item" data-tab="exams">
+        <span class="nav-ico">📝</span> Exams
+      </a>
+      <a href="#" class="nav-item" data-tab="marks">
+        <span class="nav-ico">✏️</span> Marks Entry
+      </a>
+      <a href="#" class="nav-item" data-tab="reports">
+        <span class="nav-ico">📄</span> Reports
+      </a>
+    </nav>
+
+    <main class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <section class="tab-pane active" data-pane="dashboard">
+        <div class="pane-head">
+          <div>
+            <h2>Dashboard</h2>
+            <p class="muted">Class-wide performance at a glance.</p>
+          </div>
+          <div class="pane-head-actions">
+            <label class="inline-field">
+              <span>Exam:</span>
+              <select id="dashExamSelect"></select>
+            </label>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-label">Students</div><div class="stat-value" id="stat-students">0</div></div>
+          <div class="stat-card"><div class="stat-label">Subjects</div><div class="stat-value" id="stat-subjects">0</div></div>
+          <div class="stat-card"><div class="stat-label">Class Average</div><div class="stat-value" id="stat-avg">—</div></div>
+          <div class="stat-card"><div class="stat-label">Pass Rate</div><div class="stat-value" id="stat-pass">—</div></div>
+        </div>
+
+        <div class="chart-grid">
+          <div class="card">
+            <h3>Subject-wise Class Average</h3>
+            <div class="chart-box">
+              <canvas id="subjectAvgChart"></canvas>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Pass / Fail Distribution</h3>
+            <div class="chart-box">
+              <canvas id="passFailChart"></canvas>
+            </div>
+          </div>
+          <div class="card span-2">
+            <h3>Top 5 Performers</h3>
+            <div class="chart-box short">
+              <canvas id="topChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STUDENTS ===== -->
+      <section class="tab-pane" data-pane="students">
+        <div class="pane-head">
+          <div>
+            <h2>Students</h2>
+            <p class="muted">Add, edit or delete student records.</p>
+          </div>
+          <div class="pane-head-actions">
+            <input type="search" id="studentSearch" placeholder="Search by name or roll…" />
+            <button class="btn primary" id="addStudentBtn">+ Add Student</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <table class="data-table" id="studentsTable">
+            <thead>
+              <tr>
+                <th>Roll No</th>
+                <th>Name</th>
+                <th>Class</th>
+                <th>Section</th>
+                <th>DOB</th>
+                <th>Email</th>
+                <th class="th-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== SUBJECTS ===== -->
+      <section class="tab-pane" data-pane="subjects">
+        <div class="pane-head">
+          <div>
+            <h2>Subjects</h2>
+            <p class="muted">Define subjects taught and their maximum marks.</p>
+          </div>
+          <div class="pane-head-actions">
+            <button class="btn primary" id="addSubjectBtn">+ Add Subject</button>
+          </div>
+        </div>
+        <div class="card">
+          <table class="data-table" id="subjectsTable">
+            <thead>
+              <tr>
+                <th>Code</th><th>Name</th><th>Max Marks</th><th class="th-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== EXAMS ===== -->
+      <section class="tab-pane" data-pane="exams">
+        <div class="pane-head">
+          <div>
+            <h2>Exams</h2>
+            <p class="muted">Create exam terms (e.g. Mid-Term, Final).</p>
+          </div>
+          <div class="pane-head-actions">
+            <button class="btn primary" id="addExamBtn">+ Add Exam</button>
+          </div>
+        </div>
+        <div class="card">
+          <table class="data-table" id="examsTable">
+            <thead><tr><th>Name</th><th>Year</th><th class="th-actions">Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== MARKS ENTRY ===== -->
+      <section class="tab-pane" data-pane="marks">
+        <div class="pane-head">
+          <div>
+            <h2>Marks Entry</h2>
+            <p class="muted">Enter or update marks for the selected exam.</p>
+          </div>
+          <div class="pane-head-actions">
+            <label class="inline-field"><span>Exam:</span><select id="marksExamSelect"></select></label>
+            <button class="btn primary" id="saveMarksBtn">Save Marks</button>
+          </div>
+        </div>
+        <div class="card overflow">
+          <table class="data-table marks-table" id="marksTable">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== REPORTS ===== -->
+      <section class="tab-pane" data-pane="reports">
+        <div class="pane-head">
+          <div>
+            <h2>Report Cards</h2>
+            <p class="muted">Preview and download a student&rsquo;s report card.</p>
+          </div>
+          <div class="pane-head-actions">
+            <label class="inline-field"><span>Student:</span><select id="reportStudentSelect"></select></label>
+            <label class="inline-field"><span>Exam:</span><select id="reportExamSelect"></select></label>
+            <button class="btn primary" id="downloadPdfBtn">⬇ Download PDF</button>
+          </div>
+        </div>
+        <div class="card report-card" id="reportPreview"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== Modal ===== -->
+  <div class="modal-backdrop" id="modal" hidden>
+    <div class="modal">
+      <header class="modal-head">
+        <h3 id="modalTitle">Title</h3>
+        <button class="icon-btn" id="modalCloseBtn" aria-label="Close">×</button>
+      </header>
+      <div class="modal-body" id="modalBody"></div>
+      <footer class="modal-foot">
+        <button class="btn ghost" id="modalCancelBtn">Cancel</button>
+        <button class="btn primary" id="modalSubmitBtn">Save</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
