@@ -1,0 +1,22 @@
+# Render Blueprint — deploys the SRMS Spring Boot app as a Docker web service.
+# In the Render dashboard: New + -> Blueprint, point it at this repo.
+#
+# NOTE on data persistence:
+#   SQLite stores data in a single file. To keep data across deploys/restarts
+#   you need a persistent disk (the "disk:" block below). Persistent disks
+#   require a paid instance type. On the free tier, remove the disk block and
+#   the SRMS_DB_PATH env var — the database then lives on the container's
+#   ephemeral disk and is re-seeded with demo data whenever the service restarts.
+services:
+  - type: web
+    name: srms
+    runtime: docker
+    plan: starter            # "free" works too, but see the persistence note above
+    healthCheckPath: /
+    envVars:
+      - key: SRMS_DB_PATH
+        value: /var/data/srms.db
+    disk:
+      name: srms-data
+      mountPath: /var/data
+      sizeGB: 1

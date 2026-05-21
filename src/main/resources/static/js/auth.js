@@ -44,7 +44,9 @@
     errBox.hidden = false;
   }
 
-  form.addEventListener('submit', (e) => {
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const u = usernameInput.value.trim();
     const p = passwordInput.value;
@@ -52,22 +54,18 @@
       showError('Please enter both fields.');
       return;
     }
-    if (role === 'admin') {
-      const admin = SRMS.getAdmin();
-      if (u === admin.username && p === admin.password) {
-        SRMS.setSession('admin', admin.username);
-        window.location.assign('admin.html');
-      } else {
-        showError('Invalid admin credentials.');
-      }
-    } else {
-      const stu = SRMS.getStudentByRoll(u);
-      if (stu && stu.password === p) {
-        SRMS.setSession('student', stu.id);
-        window.location.assign('student.html');
-      } else {
-        showError('Invalid roll number or password.');
-      }
+    errBox.hidden = true;
+    submitBtn.disabled = true;
+    const originalLabel = submitBtn.textContent;
+    submitBtn.textContent = 'Signing in…';
+    try {
+      const session = await SRMS.login(role, u, p);
+      SRMS.setSession(session.role, session.identifier);
+      window.location.assign(session.role === 'admin' ? 'admin.html' : 'student.html');
+    } catch (err) {
+      showError(err.message || 'Login failed. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
     }
   });
 })();

@@ -5,13 +5,6 @@
     window.location.replace('index.html');
     return;
   }
-  const student = SRMS.getStudent(session.identifier);
-  if (!student) {
-    SRMS.clearSession();
-    window.location.replace('index.html');
-    return;
-  }
-
   // elements
   const examSelect = document.getElementById('examSelect');
   const welcomeLine = document.getElementById('welcomeLine');
@@ -27,6 +20,7 @@
   const toastEl = document.getElementById('toast');
 
   let chartInstance = null;
+  let student = null; // populated after SRMS.init() loads the cache
 
   function toast(msg, kind = 'ok') {
     toastEl.textContent = msg;
@@ -41,16 +35,6 @@
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     }[c]));
   }
-
-  welcomeLine.textContent = `Welcome, ${student.name} (${student.rollNo})`;
-  studentTitle.textContent = `${student.name}'s Report`;
-  studentSub.textContent = `Class ${student.class}-${student.section} · Roll No ${student.rollNo}`;
-
-  // populate exams
-  const exams = SRMS.listExams();
-  examSelect.innerHTML = exams.map(e =>
-    `<option value="${e.id}">${escapeHtml(e.name)} (${e.year})</option>`
-  ).join('');
 
   examSelect.addEventListener('change', render);
   logoutBtn.addEventListener('click', () => {
@@ -225,5 +209,29 @@
     doc.save(`ReportCard_${stu.rollNo}_${exm.name.replace(/\s+/g, '')}.pdf`);
   }
 
-  render();
+  window.addEventListener('srms:error', (e) => toast(e.detail, 'err'));
+
+  // load data from the server, then populate the page
+  SRMS.init().then(() => {
+    student = SRMS.getStudent(session.identifier);
+    if (!student) {
+      SRMS.clearSession();
+      window.location.replace('index.html');
+      return;
+    }
+
+    welcomeLine.textContent = `Welcome, ${student.name} (${student.rollNo})`;
+    studentTitle.textContent = `${student.name}'s Report`;
+    studentSub.textContent = `Class ${student.class}-${student.section} · Roll No ${student.rollNo}`;
+
+    const exams = SRMS.listExams();
+    examSelect.innerHTML = exams.map(e =>
+      `<option value="${e.id}">${escapeHtml(e.name)} (${e.year})</option>`
+    ).join('');
+
+    render();
+  }).catch((err) => {
+    reportPreview.innerHTML =
+      `<p class="empty">Failed to load data: ${escapeHtml(err.message || err)}</p>`;
+  });
 })();

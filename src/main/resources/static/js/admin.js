@@ -114,11 +114,15 @@
     window.location.assign('index.html');
   });
 
-  resetBtn.addEventListener('click', () => {
+  resetBtn.addEventListener('click', async () => {
     if (!confirm('Reset all data to the demo defaults? This cannot be undone.')) return;
-    SRMS.resetAll();
-    renderAll();
-    toast('Demo data restored');
+    try {
+      await SRMS.resetAll();
+      renderAll();
+      toast('Demo data restored');
+    } catch (err) {
+      toast('Reset failed: ' + (err.message || err), 'err');
+    }
   });
 
   // ============================================================
@@ -707,8 +711,13 @@
     renderReports();
   }
 
-  // first paint
-  renderAll();
+  // surface background write failures (cache updated, server save failed)
+  window.addEventListener('srms:error', (e) => toast(e.detail, 'err'));
+
+  // first paint — load data from the server, then render
+  SRMS.init()
+    .then(() => renderAll())
+    .catch((err) => toast('Failed to load data: ' + (err.message || err), 'err'));
 
   // expose for debugging
   window.__SRMS_ADMIN = { renderAll, generatePdf };

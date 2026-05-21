@@ -1,0 +1,8 @@
+target/
+*.db
+.git/
+.gitignore
+.idea/
+*.iml
+README.md
+DEPLOYMENT.md
